@@ -1,4 +1,4 @@
-import ACTIONS from "./action";
+import ACTIONS from "./actions";
 import _ from "lodash";
 
 const defaultState = {

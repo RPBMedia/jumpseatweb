@@ -4,6 +4,7 @@ import { compose } from 'recompose';
 import { SignUpLink } from '../SignUp';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import { getJumpseatUserById } from '../../api';
 
 import ACTIONS from "../../modules/app/actions";
 import { connect } from "react-redux";
@@ -37,18 +38,39 @@ class SignInFormBase extends Component {
     this.state = { ...INITIAL_STATE };
   }
 
-  onSubmit = event => {
+  onSubmit = async (event) => {
     const { email, password } = this.state;
-    this.props.firebase
-      .doSignInWithEmailAndPassword(email, password)
-      .then(() => {
+    event.preventDefault();
+    try {
+      debugger;
+      const signInRes = await this.props.firebase
+        .doSignInWithEmailAndPassword(email, password);
+
+      const userFirebaseIdToken = await signInRes.user.getIdToken();
+      localStorage.setItem('userFirebaseIdToken', userFirebaseIdToken);
+      const userId = signInRes.user.uid;
+      const jumpseatUser = await getJumpseatUserById(userId, userFirebaseIdToken);
+      debugger;
+      if(jumpseatUser.data && jumpseatUser.status !== 404){
+        //Go to homepage
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
-      })
-      .catch(error => {
-        this.setState({ error });
-      });
-    event.preventDefault();
+      }
+      else if(jumpseatUser.status === 404){
+        debugger;
+        console.log('New user. Heading to onboarding...');
+        this.setState({ ...INITIAL_STATE });
+        this.props.history.push(ROUTES.ONBOARDING);
+
+      } else if(jumpseatUser.status === 500){
+        console.log('Internal server error')
+      } else {
+        console.log('Unknown error') 
+      }
+      
+    } catch(error) {
+      this.setState({ error });
+    };
   };
 
   onChange = event => {
