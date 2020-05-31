@@ -7,7 +7,7 @@ import DatePicker from "react-datepicker";
 import FileUploader from "react-firebase-file-uploader";
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
-import { postJumpseatUser } from '../../api';
+import { postUser } from '../../api';
 
 
 const OnboardingPage = () => (
@@ -68,7 +68,7 @@ class OnboardingFormBase extends Component {
         profileImagerUrl: this.state.avatarURL,
         userUid: uid,
       };
-      const newUser = await postJumpseatUser(userData);
+      const newUser = await postUser(userData);
       debugger;
       if(newUser.status === 201){
       

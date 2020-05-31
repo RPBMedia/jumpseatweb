@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import { SignUpLink } from '../SignUp';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
-import { getJumpseatUserById } from '../../api';
+import { getUserById } from '../../api';
 
 import ACTIONS from "../../modules/app/actions";
 import { connect } from "react-redux";
@@ -49,7 +49,7 @@ class SignInFormBase extends Component {
       const userFirebaseIdToken = await signInRes.user.getIdToken();
       localStorage.setItem('userFirebaseIdToken', userFirebaseIdToken);
       const userId = signInRes.user.uid;
-      const jumpseatUser = await getJumpseatUserById(userId, userFirebaseIdToken);
+      const jumpseatUser = await getUserById(userId, userFirebaseIdToken);
       debugger;
       if(jumpseatUser.data && jumpseatUser.status !== 404){
         //Go to homepage
