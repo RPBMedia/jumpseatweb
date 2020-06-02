@@ -20,6 +20,7 @@ function MapObject() {
 const WrappedMap = withScriptjs(withGoogleMap(MapObject));
 
 export default function Map() {
+  
   return (
     <div style={{widht: '100vw', height: '100vh' }}>
       <WrappedMap
